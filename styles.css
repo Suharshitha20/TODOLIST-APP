@@ -1,0 +1,150 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: rgb(2, 2, 39);
+  color: aliceblue;
+  font-family: sans-serif;
+}
+
+.container {
+  margin: 120px auto 0px;
+  padding: 10px;
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  border: 2px solid rgb(77, 29, 173);
+  border-radius: 20px;
+  justify-content: center;
+}
+
+.stats-container {
+  padding: 15px;
+  justify-content: space-between;
+  height: 130px;
+  width: 100%;
+  gap: 20px;
+  display: flex;
+}
+
+.details p {
+  margin-top: 5px;
+}
+
+.progressBar {
+  height: 10px;
+  width: 300px;
+  border: 2px solid rgb(26, 2, 162);
+  border-radius: 15px;
+  margin-top: 20px;
+}
+
+.progress {
+  background-color: rgb(28, 185, 202);
+  height: 10px;
+  width: 0%;
+  transition: all 0.2s;
+}
+
+.stats-numbers {
+  height: 100px;
+  width: 150px;
+  margin-right: 10px;
+  display: flex;
+  border: 2px solid rgb(63, 46, 169);
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  font-size: 30px;
+  font-weight: bold;
+  background-color: rgb(134, 86, 231);
+}
+
+.form {
+  margin-top: 20px;
+  padding-left: 500px;
+  width: 70%;
+  display: flex;
+  gap: 10px;
+}
+
+input[type="text"],
+input[type="time"] {
+  padding: 10px;
+  background: rgb(4, 3, 67);
+  outline: none;
+  border: 1px solid rgb(4, 3, 67);
+  color: antiquewhite;
+}
+
+input[type="text"] {
+  flex: 1;
+}
+
+button {
+  background-color: rgb(134, 86, 231);
+  display: flex;
+  border: 2px solid rgb(134, 86, 231);
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  width: 40px;
+  color: aliceblue;
+  font-weight: bold;
+}
+
+.task-list {
+  margin-top: 20px;
+  padding-left: 500px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 70%;
+}
+
+.task-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: rgb(4, 3, 67);
+  padding: 10px 15px;
+  border-radius: 8px;
+  border: 1px solid rgb(37, 37, 89);
+  color: white;
+}
+
+.task-text {
+  flex: 1;
+  margin: 0 10px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.task-text.done {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+.task-time {
+  margin-left: 10px;
+  font-size: 14px;
+  color: #b0aaff;
+  font-style: italic;
+}
+
+.icon {
+  cursor: pointer;
+  margin-left: 10px;
+  font-size: 18px;
+}
+
+.icon.delete {
+  color: rgb(220, 66, 66);
+}
+
+.icon.edit {
+  color: rgb(120, 120, 255);
+}

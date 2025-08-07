@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   const input = document.getElementById("taskInput");
-  const timeInput = document.getElementById("timeInput");
+  const fromTimeInput = document.getElementById("fromTimeInput");
+  const toTimeInput = document.getElementById("toTimeInput");
   const button = document.querySelector("button");
   const formContainer = document.querySelector(".form");
 
@@ -16,28 +17,24 @@ document.addEventListener("DOMContentLoaded", () => {
     const stats = document.querySelector(".stats-numbers p");
     const percentage = totalTasks === 0 ? 0 : (completedTasks / totalTasks) * 100;
 
-    progress.style.width = `${percentage}%`;
-    stats.textContent = `${completedTasks} / ${totalTasks}`;
+    if (progress) progress.style.width = `${percentage}%`;
+    if (stats) stats.textContent = `${completedTasks} / ${totalTasks}`;
 
     if (totalTasks > 0 && completedTasks === totalTasks) {
-      // All tasks completed – trigger celebration!
-      if (typeof confetti === "function") {
-        confetti({
-          particleCount: 150,
-          spread: 70,
-          origin: { y: 0.6 },
-        });
-
-        setTimeout(() => {
+      setTimeout(() => {
+        if (typeof confetti === "function") {
+          confetti({
+            particleCount: 200,
+            spread: 80,
+            origin: { y: 0.6 }
+          });
           alert("🎉 Congratulations! All tasks completed!");
-        }, 500);
-      } else {
-        console.log("⚠️ Confetti function not found.");
-      }
+        }
+      }, 500);
     }
-  }; // 👈 This closing brace was missing
+  };
 
-  const createTaskElement = (text, time) => {
+  const createTaskElement = (text, timeRange) => {
     const taskItem = document.createElement("div");
     taskItem.className = "task-item";
 
@@ -51,7 +48,61 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const timeDisplay = document.createElement("span");
     timeDisplay.className = "task-time";
-    timeDisplay.textContent = time ? `⏰ ${time}` : "";
+    timeDisplay.textContent = `⏰ ${timeRange}`;
+
+    const countdownDisplay = document.createElement("span");
+    countdownDisplay.className = "task-time";
+    countdownDisplay.style.marginLeft = "10px";
+
+    const playBtn = document.createElement("button");
+    playBtn.textContent = "▶️";
+    playBtn.className = "icon";
+
+    const pauseBtn = document.createElement("button");
+    pauseBtn.textContent = "⏸️";
+    pauseBtn.className = "icon";
+
+    let intervalId = null;
+
+    const [fromTimeStr, toTimeStr] = timeRange.split(" - ");
+    const fromTime = new Date();
+    const toTime = new Date();
+    const [fromHours, fromMinutes] = fromTimeStr.split(":").map(Number);
+    const [toHours, toMinutes] = toTimeStr.split(":").map(Number);
+    fromTime.setHours(fromHours, fromMinutes, 0);
+    toTime.setHours(toHours, toMinutes, 0);
+
+    function updateCountdown() {
+      const now = new Date();
+      const remaining = toTime - now;
+
+      if (remaining <= 0) {
+        clearInterval(intervalId);
+        countdownDisplay.textContent = "⏰ Time's up!";
+        countdownDisplay.style.color = "red";
+        return;
+      }
+
+      const hrs = Math.floor(remaining / (1000 * 60 * 60));
+      const mins = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+      const secs = Math.floor((remaining % (1000 * 60)) / 1000);
+
+      countdownDisplay.textContent = `⏳ ${hrs}h ${mins}m ${secs}s`;
+    }
+
+    playBtn.addEventListener("click", () => {
+      if (intervalId === null) {
+        updateCountdown();
+        intervalId = setInterval(updateCountdown, 1000);
+      }
+    });
+
+    pauseBtn.addEventListener("click", () => {
+      if (intervalId !== null) {
+        clearInterval(intervalId);
+        intervalId = null;
+      }
+    });
 
     const editBtn = document.createElement("span");
     editBtn.className = "icon edit";
@@ -75,11 +126,17 @@ document.addEventListener("DOMContentLoaded", () => {
     editBtn.addEventListener("click", () => {
       const newText = prompt("Edit task:", taskText.textContent);
       if (newText !== null) taskText.textContent = newText.trim();
+      const newFromTime = prompt("Edit start time:", fromTimeStr);
+      const newToTime = prompt("Edit end time:", toTimeStr);
+      if (newFromTime && newToTime) {
+        timeDisplay.textContent = `⏰ ${newFromTime} - ${newToTime}`;
+      }
     });
 
     deleteBtn.addEventListener("click", () => {
       if (checkbox.checked) completedTasks--;
       totalTasks--;
+      clearInterval(intervalId);
       taskItem.remove();
       updateStats();
     });
@@ -87,6 +144,9 @@ document.addEventListener("DOMContentLoaded", () => {
     taskItem.appendChild(checkbox);
     taskItem.appendChild(taskText);
     taskItem.appendChild(timeDisplay);
+    taskItem.appendChild(countdownDisplay);
+    taskItem.appendChild(playBtn);
+    taskItem.appendChild(pauseBtn);
     taskItem.appendChild(editBtn);
     taskItem.appendChild(deleteBtn);
 
@@ -95,15 +155,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const addTask = () => {
     const taskText = input.value.trim();
-    const taskTime = timeInput.value;
+    const fromTime = fromTimeInput.value;
+    const toTime = toTimeInput.value;
 
-    if (taskText === "") return;
+    if (taskText === "" || fromTime === "" || toTime === "") return;
 
-    const taskElement = createTaskElement(taskText, taskTime);
+    const taskElement = createTaskElement(taskText, `${fromTime} - ${toTime}`);
     taskList.appendChild(taskElement);
 
     input.value = "";
-    timeInput.value = "";
+    fromTimeInput.value = "";
+    toTimeInput.value = "";
     totalTasks++;
     updateStats();
   };

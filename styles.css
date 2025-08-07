@@ -46,7 +46,7 @@ body {
   background-color: rgb(28, 185, 202);
   height: 10px;
   width: 0%;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
 }
 
 .stats-numbers {
@@ -147,4 +147,12 @@ button {
 
 .icon.edit {
   color: rgb(120, 120, 255);
+}
+
+button.icon {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: white;
+  cursor: pointer;
 }
